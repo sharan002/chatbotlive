@@ -1750,9 +1750,9 @@ let sendSound, receiveSound;
 
 try { 
 
-  sendSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-arcade-game-jump-coin-216.mp3'); 
+  // sendSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-arcade-game-jump-coin-216.mp3'); 
 
-  receiveSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-unlock-game-notification-253.mp3'); 
+  // receiveSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-unlock-game-notification-253.mp3'); 
 
 } catch (e) { 
 
@@ -1778,7 +1778,7 @@ const courseData = [
 
     duration: '12 weeks', 
 
-    price: '₹59,000', 
+    price: '₹59,899', 
 
     description: 'Learn HTML, CSS, JavaScript and modern frameworks to build responsive websites.' 
 
@@ -1792,7 +1792,7 @@ const courseData = [
 
     duration: '16 weeks', 
 
-    price: '₹59,000', 
+    price: '₹59,899', 
 
     description: 'Master Python, statistics, machine learning and data visualization techniques.' 
 
@@ -1806,7 +1806,7 @@ const courseData = [
 
     duration: '8 weeks', 
 
-    price: '₹59,000', 
+    price: '₹59,899', 
 
     description: 'Learn SEO, social media marketing, content strategy and analytics.' 
 
@@ -1820,7 +1820,7 @@ const courseData = [
 
     duration: '10 weeks', 
 
-    price: '₹59,000', 
+    price: '₹59,899', 
 
     description: 'Master design principles, typography, color theory and industry-standard tools.' 
 
@@ -1834,7 +1834,7 @@ const courseData = [
 
     duration: '14 weeks', 
 
-    price: '₹59,000', 
+    price: '₹59,899', 
 
     description: 'Build native and cross-platform mobile apps for iOS and Android.' 
 
@@ -1848,7 +1848,7 @@ const courseData = [
 
     duration: '12 weeks', 
 
-    price: '₹59,000', 
+    price: '₹59,899', 
 
     description: 'Learn network security, ethical hacking and security best practices.' 
 
@@ -2821,87 +2821,46 @@ localStorage.setItem(LS.history, JSON.stringify(chatHistory));
 
 } 
 
-function botReply(text, sticker){ 
+function botReply(text, sticker) {
+  const msgDiv = document.createElement('div');
+  msgDiv.className = 'msg bot';
 
-// typing indicator 
+  const bubble = document.createElement('div');
+  bubble.className = 'message-bubble';
+  bubble.innerHTML = text;
 
-const typ = document.createElement('div'); 
+  const time = document.createElement('div');
+  time.className = 'message-time';
+  time.textContent = new Date().toLocaleTimeString([], {
+    hour: '2-digit',
+    minute: '2-digit'
+  });
 
-typ.className = 'msg bot'; 
+  msgDiv.appendChild(bubble);
 
-const tBubble = document.createElement('div'); 
+  if (sticker) {
+    const img = document.createElement('img');
+    img.className = 'chat-sticker';
+    img.src = sticker;
+    img.alt = "";
+    msgDiv.appendChild(img);
+  }
 
-tBubble.className = 'typing'; 
+  msgDiv.appendChild(time);
+  chatBody.appendChild(msgDiv);
+  chatBody.scrollTop = chatBody.scrollHeight;
 
-tBubble.innerHTML = '<span class="dot"></span><span class="dot"></span><span class="dot"></span>'; 
+  chatHistory.push({ text, sender: 'bot', time: new Date().toISOString() });
+  localStorage.setItem(LS.history, JSON.stringify(chatHistory));
 
-typ.appendChild(tBubble); 
+  // Optional: play sound if needed
+  // try {
+  //   receiveSound.play().catch(e => console.warn('Could not play receive sound:', e));
+  // } catch (e) {
+  //   console.warn('Error playing receive sound:', e);
+  // }
+}
 
-chatBody.appendChild(typ); 
-
-chatBody.scrollTop = chatBody.scrollHeight; 
-
-setTimeout(()=>{ 
-
-typ.remove(); 
-
-const msgDiv = document.createElement('div'); 
-
-msgDiv.className = 'msg bot'; 
-
-const bubble = document.createElement('div'); 
-
-bubble.className = 'message-bubble'; 
-
-bubble.innerHTML = text; 
-
-const time = document.createElement('div'); 
-
-time.className = 'message-time'; 
-
-time.textContent = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}); 
-
-msgDiv.appendChild(bubble); 
-
-if (sticker){ 
-
-const img = document.createElement('img'); 
-
-img.className = 'chat-sticker'; 
-
-img.src = sticker; 
-
-img.alt = ""; 
-
-msgDiv.appendChild(img); 
-
-} 
-
-msgDiv.appendChild(time); 
-
-chatBody.appendChild(msgDiv); 
-
-chatBody.scrollTop = chatBody.scrollHeight; 
-
-chatHistory.push({ text, sender:'bot', time: new Date().toISOString() }); 
-
-localStorage.setItem(LS.history, JSON.stringify(chatHistory)); 
-
-// Try to play sound with error handling 
-
-try { 
-
-  receiveSound.play().catch(e => console.warn('Could not play receive sound:', e)); 
-
-} catch (e) { 
-
-  console.warn('Error playing receive sound:', e); 
-
-} 
-
-}, 850); 
-
-} 
 
 function sendMessage(){ 
 
@@ -2935,15 +2894,15 @@ function sendMessage(){
 
   // Try to play sound with error handling 
 
-  try { 
+  // try { 
 
-    sendSound.play().catch(e => console.warn('Could not play send sound:', e)); 
+  //   sendSound.play().catch(e => console.warn('Could not play send sound:', e)); 
 
-  } catch (e) { 
+  // } catch (e) { 
 
-    console.warn('Error playing send sound:', e); 
+  //   console.warn('Error playing send sound:', e); 
 
-  } 
+  // } 
 
   handleUserMessage(text); 
 
@@ -3759,13 +3718,15 @@ form.appendChild(timeGroup);
 
      
 
-const name = document.getElementById('welcomeName').value;
-const email = document.getElementById('welcomeEmail').value;
-const phone = document.getElementById('welcomeMobile').value;
-const course = document.getElementById('welcomeCourse').value;
+// const name = document.getElementById('welcomeName').value;
+// const email = document.getElementById('welcomeEmail').value;
+// const phone = document.getElementById('welcomeMobile').value;
+const course = option.value
 const message = document.getElementById('message').value;   // <-- .value
 const demoDate = document.getElementById('demoDate').value; // <-- .value
 const demoTime = document.getElementById('demoTime').value; 
+
+console.log("form",name,email,mobile,course,message,demoDate,demoTime)
 
     // const formData = { 
 
@@ -4054,23 +4015,47 @@ function submitDemoBooking() {
 //  which is given and read all the contents and search and give the answers then general knowledge if needed:
 //   Company specific information: ${dynamicCompanyInfo} If the user's question isn't covered by this data, you may answer generally.`;
 
-   try {
-    const res = await fetch("https://appincoimbatore.com/wp-admin/admin-ajax.php?action=chatbot_proxy", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: userMsg , content : dynamicCompanyInfo })
-    });
+try {
+  // Show typing instantly
+  const typ = document.createElement('div');
+  typ.className = 'msg bot';
 
-    const data = await res.json();
-    if (!data.success) throw new Error("Error from server");
-    
-    const reply = data.data;
-    botReply(reply);
+  const tBubble = document.createElement('div');
+  tBubble.className = 'typing';
+  tBubble.innerHTML = '<span class="dot"></span><span class="dot"></span><span class="dot"></span>';
 
-  } catch (err) {
-    console.error("Chatbot error:", err);
-    botReply("Sorry, I couldn't connect right now.");
+  typ.appendChild(tBubble);
+  chatBody.appendChild(typ);
+  chatBody.scrollTop = chatBody.scrollHeight;
+
+  // Fetch reply from backend
+  const res = await fetch("https://appincoimbatore.com/wp-admin/admin-ajax.php?action=chatbot_proxy", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message: userMsg, content: dynamicCompanyInfo })
+  });
+
+  const data = await res.json();
+  if (!data.success) throw new Error("Error from server");
+
+  const reply = data.data;
+
+  // Remove typing immediately
+  typ.remove();
+
+  // Show bot reply instantly
+  botReply(reply);
+
+} catch (err) {
+  console.error("Chatbot error:", err);
+
+  // Remove typing if still visible
+  if (typeof typ !== "undefined" && typ.parentNode) {
+    typ.remove();
   }
+
+  botReply("Sorry, I couldn't connect right now.");
+}
 }
 
 
