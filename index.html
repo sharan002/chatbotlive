@@ -3904,7 +3904,56 @@ return s.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot
 /* ========= Start ========= */ 
 
 
-let dynamicCompanyInfo = "";
+let dynamicCompanyInfo = `
+Appin Technology, Coimbatore is division of Ether Services with 15+ years of existence and providing solutions in Software Training, Web Design and Digital Marketing Course.Industry based curriculum covers a wide array of software technologies,Trained 10000+ Students , 500+ placement clients , 50+ Active placement clients , Certificates like – Nptel , Startup India . We offer valuable internship opportunities to students at ether services ,
+Courses – Full Stack Python,Full Stack Java,Full Stack(MERN),Digital Marketing,Data Science,Data Analytics,Data Marketting job Assured and more
+Why Appin Technology Coimbatore
+Choose Appin Technology Coimbatore for your training needs
+because we offer:
+100 Percent placement support
+Real life examples
+
+Ratings:
+Google 2,137+
+Facebook 5/5
+Justdial 2150
+
+Training methods:
+Training Methods include 8hrs and 2hrs
+
+All 8 hours includes : 768-Hour Intensive Java Bootcamp Format for all below course and AI integration, Aws Cloud concepts , CI/CD ,live project work, certifications, mentor access, placement support, & project management training tools.
+
+Full Stack Java
+Duration: 4 Months (8 hours/day) = 768 Hours Total
+Mode: 100% Offline (Classroom-based, Coimbatore)
+Course Fee: ₹59,899
+
+Full Stack Python
+Duration: 4 Months (8 hours/day) = 768 Hours Total
+Mode: 100% Offline (Classroom-based, Coimbatore)
+Course Fee: ₹59,899
+Includes: AI integration, live project work, certifications, mentor access,
+
+Full Stack Mern
+Duration: 4 Months (8 hours/day) = 768 Hours Total
+Mode: 100% Offline (Classroom-based, Coimbatore)
+Course Fee: ₹59,899
+
+We also offer 2 hours course for working profesionals
+Basic Cloud concepts , live project work, certifications, mentor access, placement support,
+Python , java , MERN – 29,899
+
+Trainers :
+1.Mohan Natarajan is a Director and Digital Marketing Specialist
+2.Ms. Shindu Priya is a skilled professional with expertise in various areas including sales, operations, and customer support
+3.Ms. Kanimozhi As a Python expert
+4.Rajesh Kumar is the Chief of Operations
+5.Dinesh Rao is a skilled website developer
+6.Moogambigai is a highly skilled Senior HR Executive at Ether Services
+7.Ms. Divya is an experienced Full Stack Java Developer at Appin Technology Coimbatore.
+8.Mr. Sharan is , Currently he is an Project Engineer in our team he also worked in cutting edge technologies like AI Integration in fullstack applications and Cloud platforms also in fullstack applications
+      `
+;
 
 // List of company URLs you want to fetch
 const companyUrls = [
@@ -3951,64 +4000,15 @@ async function fetchCompanyInfo() {
     if (text) {
       combinedText += `\n\n[Source: ${url}]\n${text}`;
       // Update dynamic info as we go
-      dynamicCompanyInfo = `
-      Appin Technology, Coimbatore is division of Ether Services with 15+ years of existence and providing solutions in Software Training, Web Design and Digital Marketing Course.Industry based curriculum covers a wide array of software technologies,Trained 10000+ Students , 500+ placement clients , 50+ Active placement clients , Certificates like – Nptel , Startup India . We offer valuable internship opportunities to students at ether services ,
-Courses – Full Stack Python,Full Stack Java,Full Stack(MERN),Digital Marketing,Data Science,Data Analytics,Data Marketting job Assured and more
-
-Why Appin Technology Coimbatore
-Choose Appin Technology Coimbatore for your training needs
-because we offer:
-100 Percent placement support
-Real life examples
-
-Ratings:
-Google 2,137+
-Facebook 5/5
-Justdial 2150
-
-Training methods:
-Training Methods include 8hrs and 2hrs
-
-All 8 hours includes : 768-Hour Intensive Java Bootcamp Format for all below course and AI integration, Aws Cloud concepts , CI/CD ,live project work, certifications, mentor access, placement support, & project management training tools.
-
-Full Stack Java
-Duration: 4 Months (8 hours/day) = 768 Hours Total
-Mode: 100% Offline (Classroom-based, Coimbatore)
-Course Fee: ₹59,899
-
-Full Stack Python
-Duration: 4 Months (8 hours/day) = 768 Hours Total
-Mode: 100% Offline (Classroom-based, Coimbatore)
-Course Fee: ₹59,899
-Includes: AI integration, live project work, certifications, mentor access,
-
-Full Stack Mern
-Duration: 4 Months (8 hours/day) = 768 Hours Total
-Mode: 100% Offline (Classroom-based, Coimbatore)
-Course Fee: ₹59,899
-
-We also offer 2 hours course for working profesionals
-Basic Cloud concepts , live project work, certifications, mentor access, placement support,
-Python , java , MERN – 29,899
-
-Trainers :
-1.Mohan Natarajan is a Director and Digital Marketing Specialist
-2.Ms. Shindu Priya is a skilled professional with expertise in various areas including sales, operations, and customer support
-3.Ms. Kanimozhi As a Python expert
-4.Rajesh Kumar is the Chief of Operations
-5.Dinesh Rao is a skilled website developer
-6.Moogambigai is a highly skilled Senior HR Executive at Ether Services
-7.Ms. Divya is an experienced Full Stack Java Developer at Appin Technology Coimbatore.
-8.Mr. Sharan is , Currently he is an Project Engineer in our team he also worked in cutting edge technologies like AI Integration in fullstack applications and Cloud platforms also in fullstack applications
       
-      `;
+      combinedText = dynamicCompanyInfo
       console.log(`Loaded from ${url}`);
       console.log(combinedText)
     }
   }
   console.log("✅ All company info loaded");
-  console.log(dynamicCompanyInfo)
-  return dynamicCompanyInfo;
+
+  return combinedText;
 }
 
 // Initialize company info in background
