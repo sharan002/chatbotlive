@@ -3966,10 +3966,17 @@ async function fetchCompanyInfo() {
   fetchCompanyInfo(); // don’t block app startup
 })();
 
+  let user_history = [];
 // Handle user messages
 async function handleUserMessage(userMsg) {
+  console.log(userMsg)
   const lowerMsg = userMsg.toLowerCase();
 
+  user_history.push(userMsg)
+    if (user_history.length > 5) {
+      user_history.shift();
+    }
+ console.log(user_history)
   if (lowerMsg.includes("demo")) {
     showDateTimePicker(); // 👉 custom function
     return;
@@ -4032,7 +4039,7 @@ try {
   const res = await fetch("http://localhost:3000/chatbot-proxy", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ message: userMsg, content: dynamicCompanyInfo })
+    body: JSON.stringify({ message: userMsg, content: dynamicCompanyInfo , history : user_history})
   });
 
   const data = await res.json();
@@ -4063,6 +4070,9 @@ try {
 function botReply(text, sticker) {
   const { html } = parseText(text); // ✅ use parser
 
+
+
+    user_history.push(text)
   const msgDiv = document.createElement("div");
   msgDiv.className = "aaa";
 
