@@ -2821,45 +2821,45 @@ localStorage.setItem(LS.history, JSON.stringify(chatHistory));
 
 } 
 
-function botReply(text, sticker) {
-  const msgDiv = document.createElement('div');
-  msgDiv.className = 'msg bot';
+// function botReply(text, sticker) {
+//   const msgDiv = document.createElement('div');
+//   msgDiv.className = 'msg bot';
 
-  const bubble = document.createElement('div');
-  bubble.className = 'message-bubble';
-  bubble.innerHTML = text;
+//   const bubble = document.createElement('div');
+//   bubble.className = 'message-bubble';
+//   bubble.innerHTML = text;
 
-  const time = document.createElement('div');
-  time.className = 'message-time';
-  time.textContent = new Date().toLocaleTimeString([], {
-    hour: '2-digit',
-    minute: '2-digit'
-  });
+//   const time = document.createElement('div');
+//   time.className = 'message-time';
+//   time.textContent = new Date().toLocaleTimeString([], {
+//     hour: '2-digit',
+//     minute: '2-digit'
+//   });
 
-  msgDiv.appendChild(bubble);
+//   msgDiv.appendChild(bubble);
 
-  if (sticker) {
-    const img = document.createElement('img');
-    img.className = 'chat-sticker';
-    img.src = sticker;
-    img.alt = "";
-    msgDiv.appendChild(img);
-  }
+//   if (sticker) {
+//     const img = document.createElement('img');
+//     img.className = 'chat-sticker';
+//     img.src = sticker;
+//     img.alt = "";
+//     msgDiv.appendChild(img);
+//   }
 
-  msgDiv.appendChild(time);
-  chatBody.appendChild(msgDiv);
-  chatBody.scrollTop = chatBody.scrollHeight;
+//   msgDiv.appendChild(time);
+//   chatBody.appendChild(msgDiv);
+//   chatBody.scrollTop = chatBody.scrollHeight;
 
-  chatHistory.push({ text, sender: 'bot', time: new Date().toISOString() });
-  localStorage.setItem(LS.history, JSON.stringify(chatHistory));
+//   chatHistory.push({ text, sender: 'bot', time: new Date().toISOString() });
+//   localStorage.setItem(LS.history, JSON.stringify(chatHistory));
 
-  // Optional: play sound if needed
-  // try {
-  //   receiveSound.play().catch(e => console.warn('Could not play receive sound:', e));
-  // } catch (e) {
-  //   console.warn('Error playing receive sound:', e);
-  // }
-}
+//   // Optional: play sound if needed
+//   // try {
+//   //   receiveSound.play().catch(e => console.warn('Could not play receive sound:', e));
+//   // } catch (e) {
+//   //   console.warn('Error playing receive sound:', e);
+//   // }
+// }
 
 
 function sendMessage(){ 
@@ -4029,7 +4029,7 @@ try {
   chatBody.scrollTop = chatBody.scrollHeight;
 
   // Fetch reply from backend
-  const res = await fetch("https://appincoimbatore.com/wp-admin/admin-ajax.php?action=chatbot_proxy", {
+  const res = await fetch("http://localhost:3000/chatbot-proxy", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ message: userMsg, content: dynamicCompanyInfo })
@@ -4038,12 +4038,13 @@ try {
   const data = await res.json();
   if (!data.success) throw new Error("Error from server");
 
-  const reply = data.data;
+  const reply = data.reply;
 
   // Remove typing immediately
   typ.remove();
 
   // Show bot reply instantly
+  console.log(reply)
   botReply(reply);
 
 } catch (err) {
@@ -4057,6 +4058,137 @@ try {
   botReply("Sorry, I couldn't connect right now.");
 }
 }
+
+// Render a bot reply
+function botReply(text, sticker) {
+  const { html } = parseText(text); // ✅ use parser
+
+  const msgDiv = document.createElement("div");
+  msgDiv.className = "aaa";
+
+  const bubble = document.createElement("div");
+  bubble.className = "message-bubble";
+  bubble.innerHTML = html;
+  msgDiv.appendChild(bubble);
+
+  // Add sticker if present
+  if (sticker) {
+    const img = document.createElement("img");
+    img.className = "chat-sticker";
+    img.src = sticker;
+    img.alt = "";
+    msgDiv.appendChild(img);
+  }
+
+  // Add time
+  const time = document.createElement("div");
+  time.className = "message-time";
+  time.textContent = new Date().toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  msgDiv.appendChild(time);
+
+  // Append to chat
+  chatBody.appendChild(msgDiv);
+  chatBody.scrollTop = chatBody.scrollHeight;
+
+  // Save parsed HTML + raw text
+  chatHistory.push({ 
+    html, 
+    text, 
+    sticker, 
+    sender: "bot", 
+    time: new Date().toISOString() 
+  });
+  localStorage.setItem(LS.history, JSON.stringify(chatHistory));
+}
+
+// Text parser (handles lists, paragraphs)
+function parseText(text) {
+  const lines = text.split("\n").map(l => l.trim()).filter(l => l);
+  let html = "";
+  let listType = null;
+  let listItems = [];
+
+  function flushList() {
+    if (listItems.length) {
+      if (listType === "ol") {
+        html += "<ol>" + listItems.map(i => `<li>${i}</li>`).join("") + "</ol>";
+      } else {
+        html += "<ul>" + listItems.map(i => `<li>${i}</li>`).join("") + "</ul>";
+      }
+      listItems = [];
+      listType = null;
+    }
+  }
+
+  for (let line of lines) {
+    if (/^\d+\.\s+/.test(line)) {
+      if (listType !== "ol") flushList();
+      listType = "ol";
+      listItems.push(line.replace(/^\d+\.\s+/, ""));
+    } else if (/^[-•]\s+/.test(line)) {
+      if (listType !== "ul") flushList();
+      listType = "ul";
+      listItems.push(line.replace(/^[-•]\s+/, ""));
+    } else {
+      flushList();
+      html += `<p>${line}</p>`;
+    }
+  }
+  flushList();
+
+  return { html };
+}
+
+// Re-render chat history on page load
+function renderHistory() {
+  chatBody.innerHTML = ""; // clear chat
+
+  chatHistory.forEach(msg => {
+    const msgDiv = document.createElement("div");
+    msgDiv.className = "msg " + msg.sender;
+
+    const bubble = document.createElement("div");
+    bubble.className = "message-bubble";
+
+    // ✅ use saved html OR re-parse text
+    if (msg.html) {
+      bubble.innerHTML = msg.html;
+    } else if (msg.text) {
+      bubble.innerHTML = parseText(msg.text).html;
+    }
+
+    msgDiv.appendChild(bubble);
+
+    if (msg.sticker) {
+      const img = document.createElement("img");
+      img.className = "chat-sticker";
+      img.src = msg.sticker;
+      img.alt = "";
+      msgDiv.appendChild(img);
+    }
+
+    const time = document.createElement("div");
+    time.className = "message-time";
+    time.textContent = new Date(msg.time).toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    msgDiv.appendChild(time);
+
+    chatBody.appendChild(msgDiv);
+  });
+
+  chatBody.scrollTop = chatBody.scrollHeight;
+}
+
+// ✅ Load history from localStorage on refresh
+chatHistory = JSON.parse(localStorage.getItem(LS.history) || "[]");
+renderHistory();
+
+
 
 
 initChat(); 
